@@ -5,14 +5,14 @@ import java.util.*;
  * Atividade01
  */
 public class Atividade01 {
-	public static Scanner            entrada 				= new Scanner(System.in).useDelimiter("\\n");
-	public static ArrayList<String>  nome 					= new ArrayList<>();
-	public static ArrayList<String>  endereco 			= new ArrayList<>();
-	public static ArrayList<String>  nomeGerente 		= new ArrayList<>();
-	public static ArrayList<Double>  saldo 					= new ArrayList<>();
-	public static ArrayList<String> telefone 				= new ArrayList<>();
-	public static ArrayList<String>  cpf 						= new ArrayList<>();
-	public static ArrayList<Integer> conta 					= new ArrayList<>();
+	public static Scanner            entrada 		= new Scanner(System.in).useDelimiter("\\n");
+	public static ArrayList<String>  nome 			= new ArrayList<>();
+	public static ArrayList<String>  endereco 		= new ArrayList<>();
+	public static ArrayList<String>  nomeGerente 	= new ArrayList<>();
+	public static ArrayList<Double>  saldo 			= new ArrayList<>();
+	public static ArrayList<String> telefone 		= new ArrayList<>();
+	public static ArrayList<String>  cpf 			= new ArrayList<>();
+	public static ArrayList<Integer> conta 			= new ArrayList<>();
 	public static ArrayList<Integer> numeroAgencia	= new ArrayList<>();
 
 	public static void clearScreen() {  
@@ -265,6 +265,42 @@ public class Atividade01 {
 			entrada.next();
 		}
 	}
+
+	public static void pagarBoleto(){
+		int codBoleto, contaBancaria;
+		double valorBoleto, saldoConta;
+
+		System.out.println("**** Pagamento de boleto ****");
+		System.out.println("");
+		System.out.printf("  Cód. Boleto: ");
+		codBoleto = entrada.nextInt();
+		System.out.printf("        Valor: ");
+		valorBoleto = entrada.nextDouble();
+		do {
+			System.out.printf("        Conta: ");
+			contaBancaria = entrada.nextInt();
+		} while (!validarContaExiste(contaBancaria));
+
+		do {
+			saldoConta = saldo.get(conta.indexOf(contaBancaria));
+			System.out.printf("\n        Saldo: %5.2f", saldoConta);
+			System.out.printf("\n  Saldo final: %5.2f", (saldoConta - valorBoleto));	
+		} while (!validarSaldoSuficiente(valorBoleto, conta.indexOf(contaBancaria)));
+		
+		pularLinha(2);
+		System.out.printf("\nConfirmar o depósito? (s/n): ");
+		if (entrada.next().equals("s")) {
+			saldo.set(conta.indexOf(contaBancaria), saldo.get(conta.indexOf(contaBancaria)) - valorBoleto);
+			System.out.println("");
+			System.out.println("Pagamento realizado com sucesso.");
+		} else {
+			System.out.println("");
+			System.out.println("Pagamento cancelado.");
+		}
+		System.out.println("");
+		System.out.println("Pressione qualquer tecla para voltar ao menu principal");
+		entrada.next();
+	}
 	
 	public static void main(String[] args) {
 		nome.add("Paulo");
@@ -336,6 +372,9 @@ public class Atividade01 {
 				case 5:
 					clearScreen();
 					receber();
+				case 6:
+					clearScreen();
+					pagarBoleto();
 				case 8:
 					System.out.println("Saindo do sistema");
 					break;
