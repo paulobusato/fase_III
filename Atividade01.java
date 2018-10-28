@@ -301,6 +301,59 @@ public class Atividade01 {
 		System.out.println("Pressione qualquer tecla para voltar ao menu principal");
 		entrada.next();
 	}
+
+	public static void transferenciaEntreContas(){
+		int contaOrigem, contaDestino, indiceOrigem, indiceDestino;
+		double valorTransferencia;
+		System.out.println("**** Transferência entre contas ****");
+		System.out.println("");
+		System.out.println("Dados do remetente");
+		System.out.println("");
+		do {
+			System.out.printf("Conta Origem: ");
+			contaOrigem = entrada.nextInt();
+		} while (!validarContaExiste(contaOrigem));
+		indiceOrigem = conta.indexOf(contaOrigem);
+
+		System.out.printf("        Nome: %S\n", nome.get(indiceOrigem));
+		System.out.printf("         CPF: %S\n", cpf.get(indiceOrigem));
+		System.out.printf("     Agência: %d\n", numeroAgencia.get(indiceOrigem));
+		System.out.printf("       Conta: %d\n", conta.get(indiceOrigem));
+		System.out.println("");
+		do {
+			System.out.printf("\n   Saldo (+): %6.2f", saldo.get(indiceOrigem));
+			System.out.printf("\n   Valor (-): ");
+			valorTransferencia = entrada.nextDouble();
+		} while (!validarSaldoSuficiente(valorTransferencia, indiceOrigem));
+		System.out.printf("   Saldo (=): %6.2f\n", (saldo.get(indiceOrigem) - valorTransferencia));
+		
+		pularLinha(2);
+		
+		System.out.println("Dados do destinatário");
+		System.out.println("");
+		do {
+			System.out.printf("Conta Destino: ");
+			contaDestino = entrada.nextInt();
+		} while (!validarContaExiste(contaDestino));
+		indiceDestino = conta.indexOf(contaDestino);
+		System.out.printf("         Nome: %S\n", nome.get(indiceDestino));
+		System.out.printf("          CPF: %S\n", cpf.get(indiceDestino));
+		System.out.printf("      Agência: %d\n", numeroAgencia.get(indiceDestino));
+		System.out.printf("        Conta: %d\n", conta.get(indiceDestino));
+		System.out.printf("");
+		
+		System.out.printf("\nConfirmar o depósito? (s/n): ");
+		if (entrada.next().equals("s")) {
+			saldo.set(indiceOrigem, saldo.get(indiceOrigem) - valorTransferencia);
+			saldo.set(indiceDestino, saldo.get(indiceDestino) + valorTransferencia);
+		} else {
+			System.out.println("");
+			System.out.println("Depósito cancelado.");
+			System.out.println("");
+			System.out.println("Pressione qualquer tecla para voltar ao menu principal");
+			entrada.next();
+		}
+	}
 	
 	public static void main(String[] args) {
 		nome.add("Paulo");
@@ -372,9 +425,15 @@ public class Atividade01 {
 				case 5:
 					clearScreen();
 					receber();
+					break;
 				case 6:
 					clearScreen();
 					pagarBoleto();
+					break;
+				case 7:
+					clearScreen();
+					transferenciaEntreContas();
+					break;
 				case 8:
 					System.out.println("Saindo do sistema");
 					break;
