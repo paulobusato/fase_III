@@ -26,6 +26,25 @@ public class Atividade01 {
 		}
 	}
 
+	public static int validarContaExiste(int _conta){
+		boolean existeConta = conta.contains(_conta);
+			if (!existeConta) {
+				System.out.println("");
+				System.out.println("Conta não encontrada. Digite uma conta válida");	
+				System.out.println("");
+				return -1;
+			}	
+		return conta.indexOf(_conta);
+	}
+
+	public static boolean validarSaldoSuficiente(double param_valorDeposito, int param_indiceDepositante){
+		if (param_valorDeposito > saldo.get(param_indiceDepositante)) {
+			System.out.printf("\nSaldo insuficiente.\n");
+			return false;
+		}
+		return true;
+	}
+
 	public static int menuInicial(){
 		int opcao;
 		System.out.println("*************** Menu Principal ***************");
@@ -73,19 +92,27 @@ public class Atividade01 {
 		entrada.next();
 	}
 
-	public static void mostrarDadosCliente(int i){
+	public static void mostrarDadosCliente(int _conta){
+		int indice = validarContaExiste(_conta);
 		System.out.println("");
 		System.out.println("***** Resumo do Cadastro ******");
 		System.out.println("");
-		System.out.printf("\n* Nro. Agência: %-7d", numeroAgencia.get(i));
-		System.out.printf("\n* Nome Gerente: %-10S", nomeGerente.get(i));
-		System.out.printf("\n*        Conta: %-5d", conta.get(i));
-		System.out.printf("\n*         Nome: %-10S", nome.get(i));
-		System.out.printf("\n*          CPF: %-11S", cpf.get(i));
-		System.out.printf("\n*     Telefone: %-15S", telefone.get(i));
-		System.out.printf("\n*     Endereço: %-15S", endereco.get(i));
-		System.out.printf("\n*        Saldo: %-15S", saldo.get(i));
+		System.out.printf("\n* Nro. Agência: %-7d", numeroAgencia.get(indice));
+		System.out.printf("\n* Nome Gerente: %-10S", nomeGerente.get(indice));
+		System.out.printf("\n*        Conta: %-5d", conta.get(indice));
+		System.out.printf("\n*         Nome: %-10S", nome.get(indice));
+		System.out.printf("\n*          CPF: %-11S", cpf.get(indice));
+		System.out.printf("\n*     Telefone: %-15S", telefone.get(indice));
+		System.out.printf("\n*     Endereço: %-15S", endereco.get(indice));
+		System.out.printf("\n*        Saldo: %-15S", saldo.get(indice));
 		pularLinha(2);
+	}
+
+	public static void mostrarDadosResumido(String _nome, String _cpf, int _agencia, int _conta){
+		System.out.printf("\n   Nome: %S", _nome);
+		System.out.printf("\n    CPF: %S", _cpf);
+		System.out.printf("\nAgência: %d", _agencia);
+		System.out.printf("\n  Conta: %d", _conta);
 	}
 
 	public static boolean listarClientes(){
@@ -97,166 +124,101 @@ public class Atividade01 {
 			return false;
 		} else {
 			System.out.println("");
-			System.out.println("************************************** Lista de Clientes **************************************");
-			System.out.println("*                                                                                             *");
-				System.out.printf("* Indice * Nome                 * CPF             * Conta    * Agência * Gerente              *\n");
+			System.out.println("******************************** Lista de Clientes ********************************");
+			System.out.println("*                                                                                 *");
+				System.out.printf("* Agência * Conta * Nome                 * CPF             * Gerente              *\n");
 			for (int i = 0; i < nome.size(); i++) {
-				System.out.printf("* %-6d * %-20S * %-15S * %-8d * %-7d * %-20S *\n",
-					i+1, nome.get(i), cpf.get(i), conta.get(i), numeroAgencia.get(i), nomeGerente.get(i));
+				System.out.printf("* %-7d * %-5d * %-20S * %-15S * %-20S *\n",
+				numeroAgencia.get(i), conta.get(i), nome.get(i), cpf.get(i) , nomeGerente.get(i));
 			}
-			System.out.println("***********************************************************************************************");
+			System.out.println("***********************************************************************************");
 			System.out.println("");
 			return true;
 		}
 	}
 
-	public static void mostrarSaldo(int i){
+	public static void mostrarSaldo(int _conta){
+		int indice = validarContaExiste(_conta);
 		System.out.println("");
 		System.out.println("**** Saldo Bancário ****");
 		System.out.println("");
-		System.out.println("* Agência: " + numeroAgencia.get(i));
-		System.out.println("*   Conta: " + conta.get(i));
-		System.out.printf("*    Nome: %S", nome.get(i));
-		System.out.println("\n*   Saldo: R$ " + saldo.get(i));
+		System.out.println("* Agência: " + numeroAgencia.get(indice));
+		System.out.println("*   Conta: " + conta.get(indice));
+		System.out.printf("*    Nome: %S", nome.get(indice));
+		System.out.println("\n*   Saldo: R$ " + saldo.get(indice));
 		System.out.println("");
+		System.out.printf("Deseja salvar o saldo bancário? (s/n)");
+		if (entrada.next().equals("s")) {
+			salvarSaldoBancario(indice);
+		}
 	}
 
-	public static boolean validarClienteExiste(int i){
-		if (i > -1 && i < nome.size()) {
-			return true;
+	public static void deposito(String _tipoDeposito){
+		int _conta, _agencia, _indice;
+		double _valorDeposito;
+		String _nome, _cpf, _texto;
+		boolean efetuar = _tipoDeposito.equals("efetuar") ? true : false;
+		_texto = efetuar ? "Conta Origem: " : "Conta Destino: ";
+
+		do {
+			System.out.printf(_texto);
+			_indice = validarContaExiste(entrada.nextInt());
+		} while (_indice == -1);
+
+		if (efetuar) {
+			do {
+				System.out.printf("\n   Saldo atual: %6.2f", saldo.get(_indice));	
+				System.out.printf("\nValor Depósito: ");
+				_valorDeposito = entrada.nextDouble();
+			} while (!validarSaldoSuficiente(_valorDeposito, _indice));
+			System.out.printf("   Saldo final: %6.2f\n", (saldo.get(_indice) - _valorDeposito));	
 		} else {
-			System.out.println("");
-			System.out.println("Índice não encontrado");
-			System.out.println("");
-			return false;
-		}
-	}
-
-	public static boolean validarContaExiste(int param_Conta){
-		boolean existeConta = conta.contains(param_Conta);
-			if (!existeConta) {
-				System.out.println("");
-				System.out.println("Conta não encontrada. Digite uma conta válida");	
-				System.out.println("");
-				return false;
-			}	
-		return true;
-	}
-
-	public static boolean validarSaldoSuficiente(double param_valorDeposito, int param_indiceDepositante){
-		if (param_valorDeposito > saldo.get(param_indiceDepositante)) {
-			System.out.printf("\nSaldo insuficiente.\n");
-			return false;
-		}
-		return true;
-	}
-
-	public static void depositar(){
-		int contaDepositante, agenciaDestinatario, contaDestinatario, indiceDepositante;
-		double valorDeposito;
-		String nomeDestinatario, cpfDestinatario;
-
-		do {
-			System.out.printf("Conta Origem: ");
-			contaDepositante = entrada.nextInt();
-		} while (!validarContaExiste(contaDepositante));
-
-		indiceDepositante = conta.indexOf(contaDepositante);
-
-		do {
-			System.out.printf("\n   Saldo atual: %6.2f", saldo.get(indiceDepositante));
 			System.out.printf("\nValor Depósito: ");
-			valorDeposito = entrada.nextDouble();
-		} while (!validarSaldoSuficiente(valorDeposito, indiceDepositante));
-		System.out.printf("   Saldo final: %6.2f\n", (saldo.get(indiceDepositante) - valorDeposito));
-
-		pularLinha(2);
-		System.out.println("Dados do destinatário");
-		System.out.printf("\n   Nome: ");
-		nomeDestinatario = entrada.next();
-		System.out.printf("    CPF: ");
-		cpfDestinatario = entrada.next();
-		System.out.printf("Agência: ");
-		agenciaDestinatario = entrada.nextInt();
-		System.out.printf("  Conta: ");
-		contaDestinatario = entrada.nextInt();
-		System.out.println("");
-
-		System.out.println(" Resumo da Operação");
-		System.out.println("");
-		System.out.printf("Valor depositado: %6.2f\n", valorDeposito);
-		System.out.println("");
-		System.out.println("Remetente");
-		System.out.printf("\n   Nome: %S", nome.get(indiceDepositante));
-		System.out.printf("\n    CPF: %S", cpf.get(indiceDepositante));
-		System.out.printf("\nAgência: %d", numeroAgencia.get(indiceDepositante));
-		System.out.printf("\n  Conta: %d", conta.get(indiceDepositante));
-		pularLinha(3);
-		System.out.println("Destinatário");
-		System.out.printf("\n   Nome: %S", nomeDestinatario);
-		System.out.printf("\n    CPF: %S", cpfDestinatario);
-		System.out.printf("\nAgência: %d", agenciaDestinatario);
-		System.out.printf("\n  Conta: %d", contaDestinatario);
-		System.out.println("");
-
-		System.out.printf("\nConfirmar o depósito? (s/n): ");
-		if (entrada.next().equals("s")) {
-			saldo.set(indiceDepositante, saldo.get(indiceDepositante) - valorDeposito);
-		} else {
-			System.out.println("");
-			System.out.println("Depósito cancelado.");
-			System.out.println("");
-			System.out.println("Pressione qualquer tecla para voltar ao menu principal");
-			entrada.next();
+			_valorDeposito = entrada.nextDouble();
 		}
-	}
-
-	public static void receber(){
-	  int contaDestino, agenciaOrigem, contaOrigem, indiceDestino;
-		double valorDeposito;
-		String nomeOrigem, cpfOrigem;
-
-		do {
-			System.out.printf("Conta Destino: ");
-			contaDestino = entrada.nextInt();
-		} while (!validarContaExiste(contaDestino));
-
-		indiceDestino = conta.indexOf(contaDestino);
-		System.out.printf("\nValor Depósito: ");
-		valorDeposito = entrada.nextDouble();
 
 		pularLinha(2);
-		System.out.println("Dados do remetente");
+		_texto = efetuar ? "Dados do favorecido" : "Dados do remetente";
+		System.out.println(_texto);
 		System.out.printf("\n   Nome: ");
-		nomeOrigem = entrada.next();
+		_nome = entrada.next();
 		System.out.printf("    CPF: ");
-		cpfOrigem = entrada.next();
+		_cpf = entrada.next();
 		System.out.printf("Agência: ");
-		agenciaOrigem = entrada.nextInt();
+		_agencia = entrada.nextInt();
 		System.out.printf("  Conta: ");
-		contaOrigem = entrada.nextInt();
+		_conta = entrada.nextInt();
 		System.out.println("");
 
 		System.out.println(" Resumo da Operação");
 		System.out.println("");
-		System.out.printf("Valor depositado: %6.2f\n", valorDeposito);
+		System.out.printf("Valor depositado: %6.2f\n", _valorDeposito);
 		System.out.println("");
 		System.out.println("Remetente");
-		System.out.printf("\n   Nome: %S", nomeOrigem);
-		System.out.printf("\n    CPF: %S", cpfOrigem);
-		System.out.printf("\nAgência: %d", agenciaOrigem);
-		System.out.printf("\n  Conta: %d", contaOrigem);
+		if (efetuar) {
+			mostrarDadosResumido(nome.get(_indice), cpf.get(_indice), numeroAgencia.get(_indice), conta.get(_indice));	
+		} else {
+			mostrarDadosResumido(_nome, _cpf, _agencia, _conta);	
+		}
 		pularLinha(3);
 		System.out.println("Destinatário");
-		System.out.printf("\n   Nome: %S", nome.get(indiceDestino));
-		System.out.printf("\n    CPF: %S", cpf.get(indiceDestino));
-		System.out.printf("\nAgência: %d", numeroAgencia.get(indiceDestino));
-		System.out.printf("\n  Conta: %d", conta.get(indiceDestino));
+		if (_tipoDeposito.equals("receber")) {
+			mostrarDadosResumido(nome.get(_indice), cpf.get(_indice), numeroAgencia.get(_indice), conta.get(_indice));	
+		} else {
+			mostrarDadosResumido(_nome, _cpf, _agencia, _conta);	
+		}
 		System.out.println("");
 
 		System.out.printf("\nConfirmar o depósito? (s/n): ");
 		if (entrada.next().equals("s")) {
-			saldo.set(indiceDestino, saldo.get(indiceDestino) + valorDeposito);
+			if (efetuar) {
+				saldo.set(_indice, saldo.get(_indice) - _valorDeposito);
+				comprovanteDeposito(_valorDeposito, conta.get(_indice), numeroAgencia.get(_indice), nome.get(_indice), _conta, _agencia, _nome);
+			} else {
+				saldo.set(_indice, saldo.get(_indice) + _valorDeposito);
+				comprovanteDeposito(_valorDeposito, _conta, _agencia, _nome, conta.get(_indice), numeroAgencia.get(_indice), nome.get(_indice));
+			}
+			
 		} else {
 			System.out.println("");
 			System.out.println("Depósito cancelado.");
@@ -279,7 +241,7 @@ public class Atividade01 {
 		do {
 			System.out.printf("        Conta: ");
 			contaBancaria = entrada.nextInt();
-		} while (!validarContaExiste(contaBancaria));
+		} while (validarContaExiste(contaBancaria) == -1);
 
 		do {
 			saldoConta = saldo.get(conta.indexOf(contaBancaria));
@@ -312,13 +274,10 @@ public class Atividade01 {
 		do {
 			System.out.printf("Conta Origem: ");
 			contaOrigem = entrada.nextInt();
-		} while (!validarContaExiste(contaOrigem));
+		} while (validarContaExiste(contaOrigem) == -1);
 		indiceOrigem = conta.indexOf(contaOrigem);
 
-		System.out.printf("        Nome: %S\n", nome.get(indiceOrigem));
-		System.out.printf("         CPF: %S\n", cpf.get(indiceOrigem));
-		System.out.printf("     Agência: %d\n", numeroAgencia.get(indiceOrigem));
-		System.out.printf("       Conta: %d\n", conta.get(indiceOrigem));
+		mostrarDadosResumido(nome.get(indiceOrigem), cpf.get(indiceOrigem), numeroAgencia.get(indiceOrigem), conta.get(indiceOrigem));
 		System.out.println("");
 		do {
 			System.out.printf("\n   Saldo (+): %6.2f", saldo.get(indiceOrigem));
@@ -334,12 +293,9 @@ public class Atividade01 {
 		do {
 			System.out.printf("Conta Destino: ");
 			contaDestino = entrada.nextInt();
-		} while (!validarContaExiste(contaDestino));
+		} while (validarContaExiste(contaDestino) == -1);
 		indiceDestino = conta.indexOf(contaDestino);
-		System.out.printf("         Nome: %S\n", nome.get(indiceDestino));
-		System.out.printf("          CPF: %S\n", cpf.get(indiceDestino));
-		System.out.printf("      Agência: %d\n", numeroAgencia.get(indiceDestino));
-		System.out.printf("        Conta: %d\n", conta.get(indiceDestino));
+		mostrarDadosResumido(nome.get(indiceDestino), cpf.get(indiceDestino), numeroAgencia.get(indiceDestino), conta.get(indiceDestino));
 		System.out.printf("");
 		
 		System.out.printf("\nConfirmar o depósito? (s/n): ");
@@ -352,6 +308,46 @@ public class Atividade01 {
 			System.out.println("");
 			System.out.println("Pressione qualquer tecla para voltar ao menu principal");
 			entrada.next();
+		}
+	}
+
+	public static void comprovanteDeposito(double _valorDeposito, int _contaDepositante, int _agenciaDepositante, String _nomeDepositante, int _contaFavorecido, int _agenciaFavorecido, String _nomeFavorecido){
+		try {
+			FileWriter dir = new FileWriter("comprovante.txt");
+			PrintWriter arquivo = new PrintWriter(dir);
+			
+			arquivo.printf("Comprovante de Depósito");
+			arquivo.printf("\n   Valor: R$ %6.2f", _valorDeposito);
+			arquivo.printf("\n\nDados do depositante");
+			arquivo.printf("\n   Conta: %d", _contaDepositante);
+			arquivo.printf("\n Agência: %d", _agenciaDepositante);
+			arquivo.printf("\n    Nome: %S", _nomeDepositante);
+			arquivo.printf("\n\nDados do favorecido");
+			arquivo.printf("\n   Conta: %d", _contaFavorecido);
+			arquivo.printf("\n Agência: %d", _agenciaFavorecido);
+			arquivo.printf("\n    Nome: %S \n", _nomeFavorecido);
+
+			arquivo.close();
+		} catch (Exception e) {
+			System.out.println("Não foi possível salvar o comprovante de pagamento");
+		}
+	}
+
+	public static void salvarSaldoBancario(int _indice){
+		try {
+			FileWriter dir = new FileWriter("comprovante.txt");
+			PrintWriter arquivo = new PrintWriter(dir);
+			
+			arquivo.printf("**** Saldo Bancário ****");
+			arquivo.printf("\n* Agência: " + numeroAgencia.get(_indice));
+			arquivo.printf("\n*   Conta: " + conta.get(_indice));
+			arquivo.printf("\n*    Nome: %S", nome.get(_indice));
+			arquivo.printf("\n*   Saldo: R$ " + saldo.get(_indice));
+			arquivo.printf("\n");
+
+			arquivo.close();
+		} catch (Exception e) {
+			System.out.println("Não foi possível salvar o saldo bancario");
 		}
 	}
 	
@@ -375,7 +371,7 @@ public class Atividade01 {
 		numeroAgencia.add(104);
 
 		int opcaoMenuInicial;
-		int indiceCliente;
+		int conta;
 		do {
 			clearScreen();
 			opcaoMenuInicial = menuInicial();
@@ -385,46 +381,46 @@ public class Atividade01 {
 					cadastrarCliente();
 					break;
 				case 2:
-					indiceCliente = 0;
+					conta = 0;
 					do {
 						clearScreen();
 						if (listarClientes()) {
-							System.out.printf("Digite o índice da conta correspondente (Digite 0 p/ voltar ao menu): ");
-							indiceCliente = entrada.nextInt() - 1;
-							if (indiceCliente != -1)  {
-								if (validarClienteExiste(indiceCliente)) {
-									mostrarDadosCliente(indiceCliente);	
+							System.out.printf("Digite a conta (Digite 0 p/ voltar ao menu): ");
+							conta = entrada.nextInt();
+							if (conta != 0)  {
+								if (validarContaExiste(conta) != -1) {
+									mostrarDadosCliente(conta);	
 								}
 							System.out.println("Digite qualquer tecla para continuar...");
 							entrada.next();
 							}
 						}
-					} while (indiceCliente != -1);
+					} while (conta != 0);
 					break;
 				case 3:
-					indiceCliente = 0;
+					conta = 0;
 					do {
 						clearScreen();
 						if (listarClientes()) {
-							System.out.printf("Digite o índice da conta correspondente (Digite 0 p/ voltar ao menu): ");
-							indiceCliente = entrada.nextInt() - 1;
-							if (indiceCliente != -1)  {
-								if (validarClienteExiste(indiceCliente)) {
-									mostrarSaldo(indiceCliente);	
+							System.out.printf("Digite a conta (Digite 0 p/ voltar ao menu): ");
+							conta = entrada.nextInt();
+							if (conta != 0)  {
+								if (validarContaExiste(conta) != -1) {
+									mostrarSaldo(conta);	
 								}
-								System.out.println("Digite qualquer tecla para continuar...");
-								entrada.next();
+							System.out.println("Digite qualquer tecla para continuar...");
+							entrada.next();
 							}
 						}
-					} while (indiceCliente != -1);
+					} while (conta != 0);
 					break;
 				case 4:
 					clearScreen();
-					depositar();
+					deposito("efetuar");
 					break;
 				case 5:
 					clearScreen();
-					receber();
+					deposito("receber");
 					break;
 				case 6:
 					clearScreen();
