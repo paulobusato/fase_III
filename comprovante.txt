@@ -1,5 +1,12 @@
-**** Saldo Bancário ****
-* Agência: 231
-*   Conta: 1
-*    Nome: PAULO
-*   Saldo: R$ 100.0
+Comprovante de Movimento Bancário
+   Valor: R$  50,00
+
+Dados do depositante
+   Conta: 1
+ Agência: 231
+    Nome: PAULO
+
+Dados do favorecido
+   Conta: 2
+ Agência: 104
+    Nome: HENRIQUE 

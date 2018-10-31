@@ -302,6 +302,7 @@ public class Atividade01 {
 		if (entrada.next().equals("s")) {
 			saldo.set(indiceOrigem, saldo.get(indiceOrigem) - valorTransferencia);
 			saldo.set(indiceDestino, saldo.get(indiceDestino) + valorTransferencia);
+			comprovanteDeposito(valorTransferencia, conta.get(indiceOrigem), numeroAgencia.get(indiceOrigem), nome.get(indiceOrigem), conta.get(indiceDestino), numeroAgencia.get(indiceDestino), nome.get(indiceDestino));
 		} else {
 			System.out.println("");
 			System.out.println("Depósito cancelado.");
@@ -316,7 +317,7 @@ public class Atividade01 {
 			FileWriter dir = new FileWriter("comprovante.txt");
 			PrintWriter arquivo = new PrintWriter(dir);
 			
-			arquivo.printf("Comprovante de Depósito");
+			arquivo.printf("Comprovante de Movimento Bancário");
 			arquivo.printf("\n   Valor: R$ %6.2f", _valorDeposito);
 			arquivo.printf("\n\nDados do depositante");
 			arquivo.printf("\n   Conta: %d", _contaDepositante);
