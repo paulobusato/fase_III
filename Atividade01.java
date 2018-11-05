@@ -38,6 +38,10 @@ public class Atividade01 {
 	}
 
 	public static boolean validarSaldoSuficiente(double param_valorDeposito, int param_indiceDepositante){
+		if (param_valorDeposito <= 0) {
+			System.out.printf("\nO valor deve ser maior que zero.\n");
+			return false;
+		}
 		if (param_valorDeposito > saldo.get(param_indiceDepositante)) {
 			System.out.printf("\nSaldo insuficiente.\n");
 			return false;
@@ -234,18 +238,18 @@ public class Atividade01 {
 
 		System.out.println("**** Pagamento de boleto ****");
 		System.out.println("");
-		System.out.printf("  Cód. Boleto: ");
-		codBoleto = entrada.nextInt();
-		System.out.printf("        Valor: ");
-		valorBoleto = entrada.nextDouble();
 		do {
 			System.out.printf("        Conta: ");
 			contaBancaria = entrada.nextInt();
 		} while (validarContaExiste(contaBancaria) == -1);
+		System.out.printf("  Cód. Boleto: ");
+		codBoleto = entrada.nextInt();
 
 		do {
 			saldoConta = saldo.get(conta.indexOf(contaBancaria));
 			System.out.printf("\n        Saldo: %5.2f", saldoConta);
+			System.out.printf("\n        Valor: ");
+			valorBoleto = entrada.nextDouble();
 			System.out.printf("\n  Saldo final: %5.2f", (saldoConta - valorBoleto));	
 		} while (!validarSaldoSuficiente(valorBoleto, conta.indexOf(contaBancaria)));
 		
@@ -277,35 +281,43 @@ public class Atividade01 {
 		} while (validarContaExiste(contaOrigem) == -1);
 		indiceOrigem = conta.indexOf(contaOrigem);
 
-		mostrarDadosResumido(nome.get(indiceOrigem), cpf.get(indiceOrigem), numeroAgencia.get(indiceOrigem), conta.get(indiceOrigem));
-		System.out.println("");
-		do {
-			System.out.printf("\n   Saldo (+): %6.2f", saldo.get(indiceOrigem));
-			System.out.printf("\n   Valor (-): ");
-			valorTransferencia = entrada.nextDouble();
-		} while (!validarSaldoSuficiente(valorTransferencia, indiceOrigem));
-		System.out.printf("   Saldo (=): %6.2f\n", (saldo.get(indiceOrigem) - valorTransferencia));
-		
-		pularLinha(2);
-		
-		System.out.println("Dados do destinatário");
-		System.out.println("");
-		do {
-			System.out.printf("Conta Destino: ");
-			contaDestino = entrada.nextInt();
-		} while (validarContaExiste(contaDestino) == -1);
-		indiceDestino = conta.indexOf(contaDestino);
-		mostrarDadosResumido(nome.get(indiceDestino), cpf.get(indiceDestino), numeroAgencia.get(indiceDestino), conta.get(indiceDestino));
-		System.out.printf("");
-		
-		System.out.printf("\nConfirmar o depósito? (s/n): ");
-		if (entrada.next().equals("s")) {
-			saldo.set(indiceOrigem, saldo.get(indiceOrigem) - valorTransferencia);
-			saldo.set(indiceDestino, saldo.get(indiceDestino) + valorTransferencia);
-			comprovanteDeposito(valorTransferencia, conta.get(indiceOrigem), numeroAgencia.get(indiceOrigem), nome.get(indiceOrigem), conta.get(indiceDestino), numeroAgencia.get(indiceDestino), nome.get(indiceDestino));
+		if (saldo.get(indiceOrigem) > 0) {
+			mostrarDadosResumido(nome.get(indiceOrigem), cpf.get(indiceOrigem), numeroAgencia.get(indiceOrigem), conta.get(indiceOrigem));
+			System.out.println("");
+			do {
+				System.out.printf("\n   Saldo (+): %6.2f", saldo.get(indiceOrigem));
+				System.out.printf("\n   Valor (-): ");
+				valorTransferencia = entrada.nextDouble();
+			} while (!validarSaldoSuficiente(valorTransferencia, indiceOrigem));
+			System.out.printf("   Saldo (=): %6.2f\n", (saldo.get(indiceOrigem) - valorTransferencia));
+			
+			pularLinha(2);
+			
+			System.out.println("Dados do destinatário");
+			System.out.println("");
+			do {
+				System.out.printf("Conta Destino: ");
+				contaDestino = entrada.nextInt();
+			} while (validarContaExiste(contaDestino) == -1);
+			indiceDestino = conta.indexOf(contaDestino);
+			mostrarDadosResumido(nome.get(indiceDestino), cpf.get(indiceDestino), numeroAgencia.get(indiceDestino), conta.get(indiceDestino));
+			System.out.printf("");
+			
+			System.out.printf("\nConfirmar o depósito? (s/n): ");
+			if (entrada.next().equals("s")) {
+				saldo.set(indiceOrigem, saldo.get(indiceOrigem) - valorTransferencia);
+				saldo.set(indiceDestino, saldo.get(indiceDestino) + valorTransferencia);
+				comprovanteDeposito(valorTransferencia, conta.get(indiceOrigem), numeroAgencia.get(indiceOrigem), nome.get(indiceOrigem), conta.get(indiceDestino), numeroAgencia.get(indiceDestino), nome.get(indiceDestino));
+			} else {
+				System.out.println("");
+				System.out.println("Depósito cancelado.");
+				System.out.println("");
+				System.out.println("Pressione qualquer tecla para voltar ao menu principal");
+				entrada.next();
+			}
 		} else {
 			System.out.println("");
-			System.out.println("Depósito cancelado.");
+			System.out.println("A conta selecionado não possui saldo.");
 			System.out.println("");
 			System.out.println("Pressione qualquer tecla para voltar ao menu principal");
 			entrada.next();
