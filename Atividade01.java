@@ -144,10 +144,10 @@ public class Atividade01 {
 	public static void mostrarSaldo(int _conta){
 		int indice = validarContaExiste(_conta);
 		System.out.printf("\n**** Saldo Bancário ****\n");
-		System.out.printf("\n* Agência: %d" + numeroAgencia.get(indice));
-		System.out.printf("\n*   Conta: %d" + conta.get(indice));
+		System.out.printf("\n* Agência: %d", numeroAgencia.get(indice));
+		System.out.printf("\n*   Conta: %d", conta.get(indice));
 		System.out.printf("\n*    Nome: %S", nome.get(indice));
-		System.out.printf("\n*   Saldo: R$ %d\n\n", saldo.get(indice));
+		System.out.printf("\n*   Saldo: R$ %6.2f\n\n", saldo.get(indice));
 		System.out.printf("Deseja salvar o saldo bancário? (s/n)");
 		if (entrada.next().toLowerCase().equals("s")) { salvarSaldoBancario(indice); };
 	}
