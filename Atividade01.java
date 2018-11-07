@@ -7,7 +7,7 @@ public class Atividade01 {
 	public static ArrayList<String>  endereco 			= new ArrayList<>();
 	public static ArrayList<String>  nomeGerente		= new ArrayList<>();
 	public static ArrayList<Double>  saldo 					= new ArrayList<>();
-	public static ArrayList<String> telefone 				= new ArrayList<>();
+	public static ArrayList<String>  telefone				= new ArrayList<>();
 	public static ArrayList<String>  cpf 						= new ArrayList<>();
 	public static ArrayList<Integer> conta 					= new ArrayList<>();
 	public static ArrayList<Integer> numeroAgencia	= new ArrayList<>();
@@ -77,8 +77,29 @@ public class Atividade01 {
 			telefone.add(entrada.next());
 		System.out.printf("*     Endereço: ");
 			endereco.add(entrada.next());
-		System.out.println("\nCadastro realizado com sucesso...\n\n");
-		mostrarDadosCliente(nome.size() - 1);
+		System.out.printf("\nPara finalizar o cadastro é necessário realizar um depósito. " +
+											"O valor mínimo é de 100 reais.");
+		double valorDeposito;
+		boolean continua;
+		do {
+			System.out.printf("\nValor: ");
+			valorDeposito = entrada.nextDouble();
+			if (valorDeposito < 100) {
+				System.out.printf("\nO valor depositado é insuficiente.");
+				System.out.printf("\nDeseja tentar inserir um novo valor? (s/n): ");
+				continua = entrada.next().toLowerCase().equals("s");
+			} else {
+				continua = false;
+			}
+		} while (continua);
+
+		if (valorDeposito < 100) {
+			System.out.printf("\nCadastrado não foi efetivado\n");
+		} else {
+			System.out.println("\nCadastro realizado com sucesso...\n\n");
+			saldo.add(valorDeposito);
+			mostrarDadosCliente(conta.get(conta.size() - 1));	
+		}
 		mensagemVoltarMenu();
 	}
 
@@ -122,10 +143,10 @@ public class Atividade01 {
 
 	public static void mostrarSaldo(int _conta){
 		int indice = validarContaExiste(_conta);
-		System.out.println("\n**** Saldo Bancário ****\n\n");
-		System.out.println("* Agência: " + numeroAgencia.get(indice));
-		System.out.println("*   Conta: " + conta.get(indice));
-		System.out.printf("*    Nome: %S", nome.get(indice));
+		System.out.printf("\n**** Saldo Bancário ****\n");
+		System.out.printf("\n* Agência: %d" + numeroAgencia.get(indice));
+		System.out.printf("\n*   Conta: %d" + conta.get(indice));
+		System.out.printf("\n*    Nome: %S", nome.get(indice));
 		System.out.printf("\n*   Saldo: R$ %d\n\n", saldo.get(indice));
 		System.out.printf("Deseja salvar o saldo bancário? (s/n)");
 		if (entrada.next().toLowerCase().equals("s")) { salvarSaldoBancario(indice); };
