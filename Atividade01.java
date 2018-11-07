@@ -5,7 +5,7 @@ public class Atividade01 {
 	public static Scanner            entrada 				= new Scanner(System.in).useDelimiter("\\n");
 	public static ArrayList<String>  nome 					= new ArrayList<>();
 	public static ArrayList<String>  endereco 			= new ArrayList<>();
-	public static ArrayList<String>  nomeGerente 		= new ArrayList<>();
+	public static ArrayList<String>  nomeGerente		= new ArrayList<>();
 	public static ArrayList<Double>  saldo 					= new ArrayList<>();
 	public static ArrayList<String> telefone 				= new ArrayList<>();
 	public static ArrayList<String>  cpf 						= new ArrayList<>();
@@ -13,14 +13,8 @@ public class Atividade01 {
 	public static ArrayList<Integer> numeroAgencia	= new ArrayList<>();
 
 	public static void clearScreen() {  
-    System.out.print("\033[H\033[2J");
-    System.out.flush();
-	}
-
-	public static void pularLinha(int qtd){
-		for (int i = 0; i < qtd; i++) {
-			System.out.println("");
-		}
+		System.out.print("\033[H\033[2J");
+		System.out.flush();
 	}
 
 	public static int validarContaExiste(int _conta){
@@ -41,6 +35,11 @@ public class Atividade01 {
 			return false;
 		}
 		return true;
+	}
+
+	public static void mensagemVoltarMenu(){
+		System.out.print("\nPressione qualquer tecla para voltar ao menu inicial...\n");
+		entrada.next();
 	}
 
 	public static int menuInicial(){
@@ -80,8 +79,7 @@ public class Atividade01 {
 			endereco.add(entrada.next());
 		System.out.println("\nCadastro realizado com sucesso...\n\n");
 		mostrarDadosCliente(nome.size() - 1);
-		System.out.println("Pressione qualquer tecla para voltar ao menu inicial...");
-		entrada.next();
+		mensagemVoltarMenu();
 	}
 
 	public static void mostrarDadosCliente(int _conta){
@@ -107,8 +105,7 @@ public class Atividade01 {
 	public static boolean listarClientes(){
 		if (nome.size() < 1) {
 			System.out.print("Nenhum cliente encontrado\n\n");
-			System.out.println("Pressione qualquer tecla para voltar ao menu inicial...");
-			entrada.next();
+			mensagemVoltarMenu();
 			return false;
 		} else {
 			System.out.println("\n******************************** Lista de Clientes ********************************");
@@ -158,7 +155,6 @@ public class Atividade01 {
 			_valorDeposito = entrada.nextDouble();
 		}
 
-		pularLinha(2);
 		_texto = efetuar ? "Dados do favorecido" : "Dados do remetente";
 		System.out.printf("\n\n%S\n", _texto);
 		System.out.printf("\n   Nome: ");
@@ -197,8 +193,7 @@ public class Atividade01 {
 			
 		} else {
 			System.out.println("\nDepósito cancelado.\n\n");
-			System.out.println("Pressione qualquer tecla para voltar ao menu principal");
-			entrada.next();
+			mensagemVoltarMenu();
 		}
 	}
 
@@ -222,16 +217,14 @@ public class Atividade01 {
 			System.out.printf("\n  Saldo final: %5.2f", (saldoConta - valorBoleto));	
 		} while (!validarSaldoSuficiente(valorBoleto, conta.indexOf(contaBancaria)));
 		
-		pularLinha(2);
-		System.out.printf("\nConfirmar o depósito? (s/n): ");
+		System.out.printf("\n\nConfirmar o depósito? (s/n): ");
 		if (entrada.next().equals("s")) {
 			saldo.set(conta.indexOf(contaBancaria), saldo.get(conta.indexOf(contaBancaria)) - valorBoleto);
 			System.out.printf("\nPagamento realizado com sucesso.\n");
 		} else {
 			System.out.printf("\nPagamento cancelado.\n");
 		}
-		System.out.printf("\nPressione qualquer tecla para voltar ao menu principal\n");
-		entrada.next();
+		mensagemVoltarMenu();
 	}
 
 	public static void transferenciaEntreContas(){
@@ -247,9 +240,8 @@ public class Atividade01 {
 
 		if (saldo.get(indiceOrigem) > 0) {
 			mostrarDadosResumido(nome.get(indiceOrigem), cpf.get(indiceOrigem), numeroAgencia.get(indiceOrigem), conta.get(indiceOrigem));
-			System.out.println("");
 			do {
-				System.out.printf("\n   Saldo (+): %6.2f", saldo.get(indiceOrigem));
+				System.out.printf("\n\n   Saldo (+): %6.2f", saldo.get(indiceOrigem));
 				System.out.printf("\n   Valor (-): ");
 				valorTransferencia = entrada.nextDouble();
 			} while (!validarSaldoSuficiente(valorTransferencia, indiceOrigem));
@@ -270,13 +262,11 @@ public class Atividade01 {
 				comprovanteDeposito(valorTransferencia, conta.get(indiceOrigem), numeroAgencia.get(indiceOrigem), nome.get(indiceOrigem), conta.get(indiceDestino), numeroAgencia.get(indiceDestino), nome.get(indiceDestino));
 			} else {
 				System.out.println("\nDepósito cancelado.\n\n");
-				System.out.println("Pressione qualquer tecla para voltar ao menu principal");
-				entrada.next();
+				mensagemVoltarMenu();
 			}
 		} else {
 			System.out.println("\nA conta selecionado não possui saldo.\n\n");
-			System.out.println("Pressione qualquer tecla para voltar ao menu principal");
-			entrada.next();
+			mensagemVoltarMenu();
 		}
 	}
 
@@ -403,8 +393,7 @@ public class Atividade01 {
 					break;
 				default:
 					System.out.println("\nOpção inválida. Digite uma das opções do menu\n\n");
-					System.out.printf("\nDigite qualquer tecla para tentar novamente...");
-					entrada.next();
+					mensagemVoltarMenu();
 					break;
 			}
 		} while (opcaoMenuInicial != 8);
