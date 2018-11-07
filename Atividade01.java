@@ -103,6 +103,14 @@ public class Atividade01 {
 
 				if (valorDeposito < 100) {
 					System.out.printf("\nCadastrado não foi efetivado\n");
+					int UltimoRegistro = nome.size() - 1;
+					nome.remove(UltimoRegistro);
+					endereco.remove(UltimoRegistro);
+					nomeGerente.remove(UltimoRegistro);
+					telefone.remove(UltimoRegistro);
+					cpf.remove(UltimoRegistro);
+					conta.remove(UltimoRegistro);
+					numeroAgencia.remove(UltimoRegistro);
 				} else {
 					System.out.println("\nCadastro realizado com sucesso...\n\n");
 					saldo.add(valorDeposito);
@@ -240,21 +248,30 @@ public class Atividade01 {
 		} while (validarContaExiste(contaBancaria) == -1);
 		System.out.printf("  Cód. Boleto: ");
 		codBoleto = entrada.nextInt();
-
+		boolean continua, temSaldo;
 		do {
 			saldoConta = saldo.get(conta.indexOf(contaBancaria));
 			System.out.printf("\n        Saldo: %5.2f", saldoConta);
 			System.out.printf("\n        Valor: ");
 			valorBoleto = entrada.nextDouble();
-			System.out.printf("\n  Saldo final: %5.2f", (saldoConta - valorBoleto));	
-		} while (!validarSaldoSuficiente(valorBoleto, conta.indexOf(contaBancaria)));
-		
-		System.out.printf("\n\nConfirmar o depósito? (s/n): ");
-		if (entrada.next().equals("s")) {
-			saldo.set(conta.indexOf(contaBancaria), saldo.get(conta.indexOf(contaBancaria)) - valorBoleto);
-			System.out.printf("\nPagamento realizado com sucesso.\n");
-		} else {
-			System.out.printf("\nPagamento cancelado.\n");
+			System.out.printf("\n  Saldo final: %5.2f", (saldoConta - valorBoleto));
+			temSaldo = validarSaldoSuficiente(valorBoleto, conta.indexOf(contaBancaria));
+			if (!temSaldo) {
+				System.out.printf("\nDeseja inserir um novo valor? (s/n): ");
+				continua = entrada.next().toLowerCase().equals("s");
+			} else {
+				continua = false;
+			}
+		} while (continua);
+
+		if (temSaldo) {
+			System.out.printf("\n\nConfirmar o depósito? (s/n): ");
+			if (entrada.next().equals("s")) {
+				saldo.set(conta.indexOf(contaBancaria), saldo.get(conta.indexOf(contaBancaria)) - valorBoleto);
+				System.out.printf("\nPagamento realizado com sucesso.\n");
+			} else {
+				System.out.printf("\nPagamento cancelado.\n");
+			}	
 		}
 		mensagemVoltarMenu();
 	}
