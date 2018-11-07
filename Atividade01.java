@@ -62,44 +62,55 @@ public class Atividade01 {
 	}
 
 	public static void cadastrarCliente(){
+		boolean continua;
+		boolean TentarOutraConta = false;
 		System.out.printf("***** Cadastro de Cliente *****\n\n");
 		System.out.printf("* Nro. Agência: ");
 			numeroAgencia.add(entrada.nextInt());
 		System.out.printf("* Nome Gerente: ");
 			nomeGerente.add(entrada.next());
-		System.out.printf("*        Conta: ");
-			conta.add(entrada.nextInt());
-		System.out.printf("*         Nome: ");
-			nome.add(entrada.next());
-		System.out.printf("*          CPF: ");
-			cpf.add(entrada.next());
-		System.out.printf("*     Telefone: ");
-			telefone.add(entrada.next());
-		System.out.printf("*     Endereço: ");
-			endereco.add(entrada.next());
-		System.out.printf("\nPara finalizar o cadastro é necessário realizar um depósito. " +
-											"O valor mínimo é de 100 reais.");
-		double valorDeposito;
-		boolean continua;
 		do {
-			System.out.printf("\nValor: ");
-			valorDeposito = entrada.nextDouble();
-			if (valorDeposito < 100) {
-				System.out.printf("\nO valor depositado é insuficiente.");
-				System.out.printf("\nDeseja tentar inserir um novo valor? (s/n): ");
-				continua = entrada.next().toLowerCase().equals("s");
+			System.out.printf("*        Conta: ");
+			int novaConta = entrada.nextInt();
+			if (conta.contains(novaConta)) {
+				System.out.printf("\nA conta já existe.");
+				System.out.printf("\nDeseja inserir um outro numero? (s/n): ");
+				TentarOutraConta = entrada.next().toLowerCase().equals("s");
 			} else {
-				continua = false;
-			}
-		} while (continua);
+				conta.add(novaConta);
+				System.out.printf("*         Nome: ");
+					nome.add(entrada.next());
+				System.out.printf("*          CPF: ");
+					cpf.add(entrada.next());
+				System.out.printf("*     Telefone: ");
+					telefone.add(entrada.next());
+				System.out.printf("*     Endereço: ");
+					endereco.add(entrada.next());
+				System.out.printf("\nPara finalizar o cadastro é necessário realizar um depósito. " +
+													"O valor mínimo é de 100 reais.");
+				double valorDeposito;
+				do {
+					System.out.printf("\nValor: ");
+					valorDeposito = entrada.nextDouble();
+					if (valorDeposito < 100) {
+						System.out.printf("\nO valor depositado é insuficiente.");
+						System.out.printf("\nDeseja tentar inserir um novo valor? (s/n): ");
+						continua = entrada.next().toLowerCase().equals("s");
+					} else {
+						continua = false;
+					}
+				} while (continua);
 
-		if (valorDeposito < 100) {
-			System.out.printf("\nCadastrado não foi efetivado\n");
-		} else {
-			System.out.println("\nCadastro realizado com sucesso...\n\n");
-			saldo.add(valorDeposito);
-			mostrarDadosCliente(conta.get(conta.size() - 1));	
-		}
+				if (valorDeposito < 100) {
+					System.out.printf("\nCadastrado não foi efetivado\n");
+				} else {
+					System.out.println("\nCadastro realizado com sucesso...\n\n");
+					saldo.add(valorDeposito);
+					mostrarDadosCliente(conta.get(conta.size() - 1));
+					break;
+				}
+			}
+		} while (TentarOutraConta);
 		mensagemVoltarMenu();
 	}
 
